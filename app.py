@@ -3,14 +3,12 @@ from pydantic import BaseModel
 import pickle
 import numpy as np
 
-# تحميل النموذج والمشفرات
-with open(r"C:\Users\youssef azam\Downloads\tourism_model.pkl", "rb") as model_file:
+with open(r"https://github.com/youssef-azam-tach/Tourism-App/blob/main/tourism_model.pkl", "rb") as model_file:
     model = pickle.load(model_file)
 
-with open(r"C:\Users\youssef azam\Downloads\label_encoders_for_Gradient.pkl", "rb") as encoder_file:
+with open(r"https://github.com/youssef-azam-tach/Tourism-App/blob/main/label_encoders_for_Gradient.pkl", "rb") as encoder_file:
     label_encoders = pickle.load(encoder_file)
 
-# قاموس الربط
 mapping = {
     'Country': {0: 'Australia', 1: 'Canada', 2: 'China', 3: 'France', 4: 'Germany', 5: 'India', 6: 'UK', 7: 'USA'},
     'Gender': {0: 'Female', 1: 'Male', 2: 'Other'},
@@ -24,7 +22,6 @@ mapping = {
 # تعريف FastAPI
 app = FastAPI()
 
-# تعريف نموذج المدخلات
 class TourismInput(BaseModel):
     country: str
     Age: int
@@ -41,7 +38,6 @@ class TourismInput(BaseModel):
     avg_cost_per_day_aed: int
     with_family: str
 
-# دالة لتحويل المدخلات
 def transform_input(input_data: TourismInput):
     new_sample = {
         'Country': input_data.country,
@@ -60,7 +56,6 @@ def transform_input(input_data: TourismInput):
         'With_Family': input_data.with_family
     }
 
-    # تطبيق المشفرات على المدخلات
     for col in label_encoders.keys():
         if col in new_sample:
             new_sample[col] = label_encoders[col].transform([new_sample[col]])[0]
@@ -70,13 +65,10 @@ def transform_input(input_data: TourismInput):
     
     return new_sample_values
 
-# المسار لتوقع نوع السياحة
 @app.post("/predict_tourism_type/")
 def predict_tourism_type(input_data: TourismInput):
-    # تحويل المدخلات
     new_sample_values = transform_input(input_data)
     
-    # التنبؤ بنوع السياحة
     predicted_class = model.predict(new_sample_values)
     predicted_label = label_encoders['Tourism Type'].inverse_transform(predicted_class)
     
