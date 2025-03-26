@@ -3,10 +3,10 @@ from pydantic import BaseModel
 import pickle
 import numpy as np
 
-with open(r"https://github.com/youssef-azam-tach/Tourism-App/blob/main/tourism_model.pkl", "rb") as model_file:
+with open("https://raw.githubusercontent.com/youssef-azam-tach/Tourism-App/main/tourism_model.pkl", "rb") as model_file:
     model = pickle.load(model_file)
 
-with open(r"https://github.com/youssef-azam-tach/Tourism-App/blob/main/label_encoders_for_Gradient.pkl", "rb") as encoder_file:
+with open("https://raw.githubusercontent.com/youssef-azam-tach/Tourism-App/main/label_encoders_for_Gradient.pkl", "rb") as encoder_file:
     label_encoders = pickle.load(encoder_file)
 
 mapping = {
